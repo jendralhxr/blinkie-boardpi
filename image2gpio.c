@@ -35,24 +35,24 @@ printf("initialized GPIO-out: %d %d %d %d %d %d %d %d %d\n",\
 }
 
 void gpio_blink(char value){
-	if (value&1) write(fd[0], "1",1);
-	else write(fd_led[0], "0",1);
-	if (value&2) write(fd_led[1], "1",1);
-	else write(fd_led[1], "0",1);
-	if (value&4) write(fd_led[2], "1",1);
-	else write(fd_led[2], "0",1);
-	if (value&8) write(fd_led[3], "1",1);
-	else write(fd_led[3], "0",1);
-	if (value&16) write(fd_led[4], "1",1);
-	else write(fd_led[4], "0",1);
-	if (value&32) write(fd_led[5], "1",1);
-	else write(fd_led[5], "0",1);
-	if (value&64) write(fd_led[6], "1",1);
-	else write(fd_led[6], "0",1);
-	if (value&128) write(fd_led[7], "1",1);
-	else write(fd_led[7], "0",1);
-	write(fd_led[8], "1",1); // the 'trigger' thing
-	write(fd_led[8], "0",1);
+	if (value&1) write(fd[0], "0",1);
+	else write(fd_led[0], "1",1);
+	if (value&2) write(fd_led[1], "0",1);
+	else write(fd_led[1], "1",1);
+	if (value&4) write(fd_led[2], "0",1);
+	else write(fd_led[2], "1",1);
+	if (value&8) write(fd_led[3], "0",1);
+	else write(fd_led[3], "1",1);
+	if (value&16) write(fd_led[4], "0",1);
+	else write(fd_led[4], "1",1);
+	if (value&32) write(fd_led[5], "0",1);
+	else write(fd_led[5], "1",1);
+	if (value&64) write(fd_led[6], "0",1);
+	else write(fd_led[6], "1",1);
+	if (value&128) write(fd_led[7], "0",1);
+	else write(fd_led[7], "1",1);
+	write(fd_led[8], "0",1); // the 'trigger' thing
+	write(fd_led[8], "1",1);
 }
 
 int main(int argc, char **argv){
