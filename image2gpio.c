@@ -17,7 +17,7 @@ int fd_led[9];
 
 // LED to GPIO pin number, match this to your wiring
 // LED[8] is for frame 'trigger'
-char LED[9]= {16, 16, 16, 16, 16, 16, 16, 16, 16};
+char LED[9]= {5, 6, 13, 19, 26, 12, 16, 20, 21};
 
 void gpio_init(){
 int i;
