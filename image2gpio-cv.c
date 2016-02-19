@@ -9,7 +9,7 @@
 #include <opencv2/highgui/highgui_c.h>
 
 // compile against opencv
-// gcc image2array.c `pkg-config --libs --cflags opencv`
+// gcc image2gpio.c `pkg-config --libs --cflags opencv`
 
 char command[80]; 
 unsigned char temp;
@@ -23,19 +23,19 @@ void gpio_init(){
 int i;
 for (i=0; i<9; i++){
 	sprintf(command,"echo %d >> /sys/class/gpio/export", LED[i]);
-	if (system(command)) return(1);
-	sprintf(command,"echo out > /sys/class/gpio/gpio%d/direction", LED[i])
-	if (system(command)) return(1);
+	if (system(command)==-1) exit(1);
+	sprintf(command,"echo out > /sys/class/gpio/gpio%d/direction", LED[i]);
+	if (system(command)==-1) exit(1);
 	sprintf(command,"/sys/class/gpio/gpio%d/value", LED[i]);
 	fd_led[i]= open(command, O_WRONLY);
-	if (fd_led[i]==-1) return(2);
+	if (fd_led[i]==-1) exit(2);
 	}
 printf("initialized GPIO-out: %d %d %d %d %d %d %d %d %d\n",\
 	LED[0], LED[1], LED[2], LED[3], LED[4], LED[5], LED[6], LED[7], LED[8]);
 }
 
 void gpio_blink(char value){
-	if (value&1) write(fd[0], "0",1);
+	if (value&1) write(fd_led[0], "0",1);
 	else write(fd_led[0], "1",1);
 	if (value&2) write(fd_led[1], "0",1);
 	else write(fd_led[1], "1",1);
