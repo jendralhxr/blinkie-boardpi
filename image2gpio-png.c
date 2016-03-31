@@ -40,7 +40,7 @@ char LED[9]= {5, 6, 13, 19, 26, 12, 16, 20, 21};
 
 int gpio_init(){
 int i;
-for (i=0; i<9; i++){
+for (i=0; i<=9; i++){
 	sprintf(command,"echo %d >> /sys/class/gpio/export", LED[i]);
 	if (system(command)==-1) exit(1);
 	sprintf(command,"echo out > /sys/class/gpio/gpio%d/direction", LED[i]);
