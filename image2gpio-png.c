@@ -26,6 +26,7 @@
 #include <png.h>
 
 int width, height;
+int delay;
 png_byte color_type;
 png_byte bit_depth;
 png_bytep *row_pointers;
@@ -40,7 +41,7 @@ char LED[9]= {5, 6, 13, 19, 26, 12, 16, 20, 21};
 
 int gpio_init(){
 int i;
-for (i=0; i<=9; i++){
+for (i=0; i<9; i++){
 	sprintf(command,"echo %d >> /sys/class/gpio/export", LED[i]);
 	if (system(command)==-1) exit(1);
 	sprintf(command,"echo out > /sys/class/gpio/gpio%d/direction", LED[i]);
@@ -72,6 +73,7 @@ void gpio_blink(char value){
 	else write(fd_led[7], "1",1);
 	write(fd_led[8], "0",1); // the 'trigger' thing
 	write(fd_led[8], "1",1);
+	usleep(delay);
 }
 
 
@@ -134,24 +136,10 @@ void read_png_file(char *filename) {
   fclose(fp);
 }
 
-void process_png_file() {
-  int x, y;
-  for(y = 0; y < height; y++) {
-    png_bytep row = row_pointers[y];
-    for(x = 0; x < width; x++) {
-      png_bytep px = &(row[x * 4]);
-      px[0] = 0;
-      px[1] = px[2]>>1;
-      // Do something awesome for each pixel here...
-      //printf("%4d, %4d = RGBA(%3d, %3d, %3d, %3d)\n", x, y, px[0], px[1], px[2], px[3]);
-    }
-  }
-}
-
 int main(int argc, char **argv){
 	gpio_init();
     read_png_file(argv[1]);
-    
+    delay=atoi(argv[1]);
     int i, j;
     png_bytep row, px;
 	imageblink:
