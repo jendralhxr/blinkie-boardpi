@@ -165,5 +165,6 @@ int main(int argc, char **argv){
 	gettimeofday(&tv_stop, NULL);
 	printf("\r interval: %d usec\n",(tv_stop.tv_sec - tv_start.tv_sec)*1000+\
 	tv_stop.tv_usec - tv_start.tv_usec);	
+	gettimeofday(&tv_start, NULL);
 	goto imageblink;	
     }
