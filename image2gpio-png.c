@@ -26,12 +26,19 @@
 #include <sys/time.h>
 #include <png.h>
 
+
+#define INTERVAL_TARGET 500
+#define INTERVAL_BLOCK 50
+#define DELAY_INIT 360
+int delay, interval_counter;
+float delay_accu;
+
 int width, height;
 int delay;
 png_byte color_type;
 png_byte bit_depth;
 png_bytep *row_pointers;
-
+struct timeval tv_start, tv_stop;
 char command[80]; 
 unsigned char temp;
 int fd_led[9];
@@ -140,7 +147,7 @@ void read_png_file(char *filename) {
 int main(int argc, char **argv){
 	gpio_init();
     read_png_file(argv[1]);
-    delay=atoi(argv[1]);
+    delay=DELAY_INIT;
     int i, j;
     png_bytep row, px;
 	imageblink:
@@ -163,8 +170,19 @@ int main(int argc, char **argv){
 			}	
 		}
 	gettimeofday(&tv_stop, NULL);
-	printf("\r interval: %d usec\n",(tv_stop.tv_sec - tv_start.tv_sec)*1000+\
-	tv_stop.tv_usec - tv_start.tv_usec);	
+	//so-called frequency lock
+	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+\
+	tv_stop.tv_usec - tv_start.tv_usec;
 	gettimeofday(&tv_start, NULL);
+	interval_counter++;
+	if (interval_counter==INTERVAL_BLOCK){
+		delay_accu= delay_accu/INTERVAL_BLOCK;
+		printf("\n%f,",delay_accu); // may be disabled for 'real-time purist'
+		interval_counter= 0;
+		// some eval
+		if (delay_accu<INTERVAL_TARGET) delay++;
+		else delay--;
+		delay_accu=0;
+	}
 	goto imageblink;	
     }
