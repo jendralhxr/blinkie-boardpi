@@ -23,6 +23,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <png.h>
 
 int width, height;
@@ -143,6 +144,7 @@ int main(int argc, char **argv){
     int i, j;
     png_bytep row, px;
 	imageblink:
+	gettimeofday(&tv_start, NULL);
     for (j=0; j<height; j++){
 		row = row_pointers[j];
 		if ((j==0) & (i==0)){
@@ -160,5 +162,8 @@ int main(int argc, char **argv){
 			else gpio_blink(temp);
 			}	
 		}
+	gettimeofday(&tv_stop, NULL);
+	printf("\r interval: %d usec\n",(tv_stop.tv_sec - tv_start.tv_sec)*1000+\
+	tv_stop.tv_usec - tv_start.tv_usec);	
 	goto imageblink;	
     }
