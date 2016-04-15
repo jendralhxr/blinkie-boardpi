@@ -143,9 +143,9 @@ int main(int argc, char **argv){
     delay=atoi(argv[1]);
     int i, j;
     png_bytep row, px;
+	imageblink:
 	gettimeofday(&tv_start, NULL);
-    imageblink:
-	for (j=0; j<height; j++){
+    for (j=0; j<height; j++){
 		row = row_pointers[j];
 		if ((j==0) & (i==0)){
 			gpio_blink(0xc);
@@ -163,8 +163,7 @@ int main(int argc, char **argv){
 			}	
 		}
 	gettimeofday(&tv_stop, NULL);
-	gettimeofday(&tv_start, NULL);
-    printf("\r interval: %d usec\n",(tv_stop.tv_sec - tv_start.tv_sec)*1000+\
+	printf("\r interval: %d usec\n",(tv_stop.tv_sec - tv_start.tv_sec)*1000+\
 	tv_stop.tv_usec - tv_start.tv_usec);	
 	goto imageblink;	
     }
