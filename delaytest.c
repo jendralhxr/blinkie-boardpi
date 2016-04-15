@@ -64,10 +64,11 @@ int main(int argc, char **argv){
 	delay=atoi(argv[1]);
 	printf("delay= %d\n",delay);
 	char tempval;
-	while(1){
 	gettimeofday(&tv_start, NULL);
+	while(1){
 	gpio_blink(tempval++);
 	gettimeofday(&tv_stop, NULL);
+	gettimeofday(&tv_start, NULL);
 	printf("\r interval: %d usec\n",(tv_stop.tv_sec - tv_start.tv_sec)*1000+\
 	tv_stop.tv_usec - tv_start.tv_usec);
 	}
