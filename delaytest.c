@@ -8,11 +8,15 @@
 #include <sys/time.h>
 #include <png.h>
 
-#define INTERVAL_TARGET 500
-#define INTERVAL_BLOCK 50
+#define INTERVAL_TARGET 498
+#define INTERVAL_BLOCK 60
 #define DELAY_INIT 360
 int delay, interval_counter;
 float delay_accu;
+int width, height;
+png_byte color_type;
+png_byte bit_depth;
+png_bytep *row_pointers;
 struct timeval tv_start, tv_stop;
 char command[80]; 
 unsigned char temp;
@@ -75,7 +79,7 @@ int main(int argc, char **argv){
 	interval_counter++;
 	if (interval_counter==INTERVAL_BLOCK){
 		delay_accu= delay_accu/INTERVAL_BLOCK;
-		printf("\n%f,",delay_accu); // may be disabled for 'real-time purist'
+		printf("\n%f %d",delay_accu,delay); // may be disabled for 'real-time purist'
 		interval_counter= 0;
 		// some eval
 		if (delay_accu<INTERVAL_TARGET) delay++;
