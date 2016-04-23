@@ -8,15 +8,11 @@
 #include <sys/time.h>
 #include <png.h>
 
-#define INTERVAL_TARGET 498
-#define INTERVAL_BLOCK 60
+#define INTERVAL_TARGET 498.5
+#define INTERVAL_BLOCK 30
 #define DELAY_INIT 360
-int delay, interval_counter;
-float delay_accu;
-int width, height;
-png_byte color_type;
-png_byte bit_depth;
-png_bytep *row_pointers;
+unsigned int delay, interval_counter;
+unsigned int delay_accu, delay_total;
 struct timeval tv_start, tv_stop;
 char command[80]; 
 unsigned char temp;
@@ -66,23 +62,21 @@ void gpio_blink(char value){
 int main(int argc, char **argv){
 	gpio_init();
 	delay=DELAY_INIT;
-	//printf("delay= %d\n",delay);
 	char tempval;
+	delay_total= (int)(INTERVAL_BLOCK*atof(argv[1]));
+	printf("interval= %f total %d\n",atof(argv[1]),delay_total);
 	gettimeofday(&tv_start, NULL);
 	while(1){
 	gpio_blink(tempval++);
 	gettimeofday(&tv_stop, NULL);
 	//so-called frequency lock
-	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+\
-	tv_stop.tv_usec - tv_start.tv_usec;
+	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
 	gettimeofday(&tv_start, NULL);
 	interval_counter++;
 	if (interval_counter==INTERVAL_BLOCK){
-		delay_accu= delay_accu/INTERVAL_BLOCK;
-		printf("\n%f %d",delay_accu,delay); // may be disabled for 'real-time purist'
 		interval_counter= 0;
 		// some eval
-		if (delay_accu<INTERVAL_TARGET) delay++;
+		if (delay_accu<delay_total) delay++;
 		else delay--;
 		delay_accu=0;
 	}
