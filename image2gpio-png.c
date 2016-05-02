@@ -31,7 +31,7 @@
 #define INTERVAL_BLOCK 50
 #define DELAY_INIT 360
 int delay, interval_counter;
-float delay_accu;
+unsigned int delay_accu, delay_total;
 
 int width, height;
 int delay;
@@ -79,9 +79,9 @@ void gpio_blink(char value){
 	else write(fd_led[6], "1",1);
 	if (value&128) write(fd_led[7], "0",1);
 	else write(fd_led[7], "1",1);
-	write(fd_led[8], "0",1); // the 'trigger' thing
-	write(fd_led[8], "1",1);
+	write(fd_led[8], "1",1); // the 'trigger' thing
 	usleep(delay);
+	write(fd_led[8], "0",1);
 }
 
 
@@ -145,11 +145,15 @@ void read_png_file(char *filename) {
 }
 
 int main(int argc, char **argv){
-	gpio_init();
-    read_png_file(argv[1]);
-    delay=DELAY_INIT;
-    int i, j;
+	int i, j;
     png_bytep row, px;
+	gpio_init();
+    read_png_file(argv[2]);
+    delay=DELAY_INIT;
+	delay_total= (int)(INTERVAL_BLOCK*atof(argv[1]));
+	printf("interval= %f total %d\n",atof(argv[1]),delay_total);
+	gettimeofday(&tv_start, NULL);
+		
 	imageblink:
 	gettimeofday(&tv_start, NULL);
     for (j=0; j<height; j++){
@@ -171,16 +175,13 @@ int main(int argc, char **argv){
 		}
 	gettimeofday(&tv_stop, NULL);
 	//so-called frequency lock
-	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+\
-	tv_stop.tv_usec - tv_start.tv_usec;
+	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
 	gettimeofday(&tv_start, NULL);
 	interval_counter++;
 	if (interval_counter==INTERVAL_BLOCK){
-		delay_accu= delay_accu/INTERVAL_BLOCK;
-		printf("\n%f,",delay_accu); // may be disabled for 'real-time purist'
 		interval_counter= 0;
 		// some eval
-		if (delay_accu<INTERVAL_TARGET) delay++;
+		if (delay_accu<delay_total) delay++;
 		else delay--;
 		delay_accu=0;
 	}
