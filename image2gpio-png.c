@@ -82,6 +82,20 @@ void gpio_blink(char value){
 	write(fd_led[8], "1",1); // the 'trigger' thing
 	usleep(delay);
 	write(fd_led[8], "0",1);
+	
+	gettimeofday(&tv_stop, NULL);
+	//so-called frequency lock
+	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
+	gettimeofday(&tv_start, NULL);
+	interval_counter++;
+	if (interval_counter==INTERVAL_BLOCK){
+		interval_counter= 0;
+		// some eval
+		if (delay_accu<delay_total) delay++;
+		else delay--;
+		delay_accu=0;
+//		printf("%d\n",delay);
+	}
 }
 
 
@@ -152,11 +166,10 @@ int main(int argc, char **argv){
     delay=DELAY_INIT;
 	delay_total= (int)(INTERVAL_BLOCK*atof(argv[1]));
 	printf("interval= %f total %d\n",atof(argv[1]),delay_total);
+	
 	gettimeofday(&tv_start, NULL);
-		
 	imageblink:
-	gettimeofday(&tv_start, NULL);
-    for (j=0; j<height; j++){
+	for (j=0; j<height; j++){
 		row = row_pointers[j];
 		if ((j==0) & (i==0)){
 			gpio_blink(0xc);
@@ -171,19 +184,8 @@ int main(int argc, char **argv){
 			temp= px[0];
 			if ((temp==0xc) || (temp==0xd)) gpio_blink(0xe);
 			else gpio_blink(temp);
-			}	
+			}
+			
 		}
-	gettimeofday(&tv_stop, NULL);
-	//so-called frequency lock
-	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
-	gettimeofday(&tv_start, NULL);
-	interval_counter++;
-	if (interval_counter==INTERVAL_BLOCK){
-		interval_counter= 0;
-		// some eval
-		if (delay_accu<delay_total) delay++;
-		else delay--;
-		delay_accu=0;
-	}
 	goto imageblink;	
     }
