@@ -28,7 +28,7 @@
 
 
 #define INTERVAL_TARGET 500
-#define INTERVAL_BLOCK 50
+#define INTERVAL_BLOCK 80
 #define DELAY_INIT 360
 int delay, interval_counter;
 unsigned int delay_accu, delay_total;
@@ -182,7 +182,7 @@ int main(int argc, char **argv){
 		interval_counter= 0;
 		// some eval
 		if (delay_accu<delay_total) delay++;
-		else delay--;
+		else if (delay_accu>delay_total)  delay--;
 		delay_accu=0;
 	}
 	goto imageblink;	
