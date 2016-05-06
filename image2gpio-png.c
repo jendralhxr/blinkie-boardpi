@@ -163,13 +163,13 @@ int main(int argc, char **argv){
 			gpio_blink(0xc); // just to be safe
 			}
 		else{
-			gpio_blink(0xd);
-			gpio_blink(0xd); // just to be safe
+			gpio_blink(0x3);
+			gpio_blink(0x3); // just to be safe
 			}
 		for (i=0; i<width; i++){	
 			px = &(row[i * 4]);
 			temp= px[0];
-			if ((temp==0xc) || (temp==0xd)) gpio_blink(0xe);
+			if ((temp==0xc) || (temp==0x3)) gpio_blink(0xe);
 			else gpio_blink(temp);
 			}	
 		}
