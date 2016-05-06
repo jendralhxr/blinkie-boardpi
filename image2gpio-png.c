@@ -166,24 +166,25 @@ int i, j;
     delay=DELAY_INIT;
 	delay_total= (int)(INTERVAL_BLOCK*atof(argv[1]));
 	printf("interval= %f total %d\n",atof(argv[1]),delay_total);
-	
+
 	gettimeofday(&tv_start, NULL);
 	imageblink:
 	i=0; j=0;
 	for (j=0; j<height; j++){
+//	printf("row: %d\n",j);
 		row = row_pointers[j];
 		if ((j==0) & (i==0)){
-			gpio_blink(0xc);
-			gpio_blink(0xc); // just to be safe
-			}
-		else{
 			gpio_blink(0x3);
 			gpio_blink(0x3); // just to be safe
+			}
+		else{
+			gpio_blink(0xc);
+			gpio_blink(0xc); // just to be safe
 			}
 		for (i=0; i<width; i++){	
 			px = &(row[i * 4]);
 			temp= px[0];
-			if ((temp==0xc) || (temp==0x3)) gpio_blink(0xe);
+			if ((temp==0xc) || (temp==0x3)) gpio_blink(0x1a);
 			else gpio_blink(temp);
 			}
 			
