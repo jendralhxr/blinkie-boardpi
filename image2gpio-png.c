@@ -177,7 +177,7 @@ int i, j;
 			gpio_blink(0x3);
 			gpio_blink(0x3); // just to be safe
 			}
-		else{
+		else if (i==0){
 			gpio_blink(0xc);
 			gpio_blink(0xc); // just to be safe
 			}
@@ -187,19 +187,7 @@ int i, j;
 			if ((temp==0xc) || (temp==0x3)) gpio_blink(0x1a);
 			else gpio_blink(temp);
 			}
-			
+		i=0;	
 		}
-	gettimeofday(&tv_stop, NULL);
-	//so-called frequency lock
-	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
-	gettimeofday(&tv_start, NULL);
-	interval_counter++;
-	if (interval_counter==INTERVAL_BLOCK){
-		interval_counter= 0;
-		// some eval
-		if (delay_accu<delay_total) delay++;
-		else if (delay_accu>delay_total)  delay--;
-		delay_accu=0;
-	}
 	goto imageblink;	
     }
