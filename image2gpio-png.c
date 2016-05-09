@@ -83,12 +83,12 @@ void gpio_blink(char value){
 	usleep(delay);
 	write(fd_led[8], "0",1);
 	
-	gettimeofday(&tv_stop, NULL);
 	//so-called frequency lock
-	delay_accu+= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
 	gettimeofday(&tv_start, NULL);
 	interval_counter++;
 	if (interval_counter==INTERVAL_BLOCK){
+		gettimeofday(&tv_stop, NULL);
+		delay_accu= (tv_stop.tv_sec - tv_start.tv_sec)*1000+tv_stop.tv_usec - tv_start.tv_usec;
 		interval_counter= 0;
 		// some eval
 		if (delay_accu<delay_total) delay++;
